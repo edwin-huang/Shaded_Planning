@@ -8,6 +8,9 @@ app.use(cors());
 
 app.use(express.json()); // Middleware to parse JSON bodies
 
+const path = require('path');
+app.use(express.static(path.join(__dirname, '../../frontend')));
+
 app.post('/get-path', (req, res) => {
     const { origin, destination } = req.body;
 

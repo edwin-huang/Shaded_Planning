@@ -3,7 +3,7 @@ let map;
 let directionsRenderers = [];
 
 // API related constants
-const API_BASE_URL = 'http://localhost:8080';
+const API_BASE_URL = '';
 const COORD_BASE_URL = "https://maps.googleapis.com/maps/api/geocode/json";
 var API_KEY = null;
 
