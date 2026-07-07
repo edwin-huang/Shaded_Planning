@@ -29,7 +29,7 @@ def build_graph(links_df, nodes_df, percentage_cover_data, lengthFactor=1, shade
         link_id = row['link_id']
         
         percentage_cover = percentage_cover_data.get(link_id, {}).get('percentageCover', 0)
-        weight = lengthFactor * length + shadeFactor * percentage_cover
+        weight = max(length * (lengthFactor * 1 + shadeFactor * (1-(percentage_cover/100))), 0)
         
         # graph[from_node]['edges'].append((to_node, weight))
 
