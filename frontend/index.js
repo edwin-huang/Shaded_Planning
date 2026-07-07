@@ -74,7 +74,7 @@ function loadGoogleMaps() {
 }
 
 // Refresh the shaded paths on the map
-function refreshShadedPaths(source, destination, travelMode, numRoutes) {
+function refreshShadedPaths(source, destination, travelMode, numRoutes, hour) {
     removeLegend();
 
     // Show the spinner
@@ -86,7 +86,7 @@ function refreshShadedPaths(source, destination, travelMode, numRoutes) {
         getCoordinates(source),
         getCoordinates(destination)
     ]).then(([coords1, coords2]) => {
-        getPaths(coords1, coords2, travelMode, numRoutes)
+        getPaths(coords1, coords2, travelMode, numRoutes, hour)
             .then(pathsData => {
                 // Hide the spinner
                 mask.style.display = 'none';
@@ -127,9 +127,10 @@ document.addEventListener('DOMContentLoaded', () => {
         let destinationValue = document.getElementById('destinationInput').value;
         let travelMode = document.querySelector('input[name="travelMode"]:checked').value;
         const numRoutes = parseInt(document.getElementById('numRoutesInput').value);
+        const hour = parseInt(document.getElementById('hourInput').value);
 
         // Refresh the map and fetch new routes based on input values
-        refreshShadedPaths(sourceValue, destinationValue, travelMode, numRoutes);
+        refreshShadedPaths(sourceValue, destinationValue, travelMode, numRoutes, hour);
     });
 
     const resetButton = document.getElementById('resetButton');
@@ -309,7 +310,7 @@ function renderPaths(pathsData) {
 }
 
 // Fetch the paths from the backend API
-async function getPaths(origin, destination, travelMode, numRoutes) {
+async function getPaths(origin, destination, travelMode, numRoutes, hour) {
     const response = await fetch(`${API_BASE_URL}/get-path`, {
         method: 'POST',
         headers: {
@@ -319,7 +320,8 @@ async function getPaths(origin, destination, travelMode, numRoutes) {
             origin: origin,
             destination: destination,
             travelMode: travelMode,
-            numRoutes: numRoutes
+            numRoutes: numRoutes,
+            hour: hour
         }),
     });
 

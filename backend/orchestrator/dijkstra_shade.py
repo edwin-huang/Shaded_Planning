@@ -78,9 +78,13 @@ def dijkstra(graph, start, end):
     return path
 
 # Main function adjusted to include percentageCover data
-def calculate(links_file_path, nodes_file_path, start_node, end_node, percentage_cover_data, lengthFactor, shadeFactor, cityName):
+def calculate(links_file_path, nodes_file_path, start_node, end_node, percentage_cover_data, lengthFactor, shadeFactor, cityName, hour=None):
 
-    path = f'../orchestrator/graphData/{cityName}/graph_{lengthFactor}_{shadeFactor}.pkl'
+    graph_dir = f'../orchestrator/graphData/{cityName}'
+    if hour is not None:
+        graph_dir = f'{graph_dir}/hr{hour}'
+    os.makedirs(graph_dir, exist_ok=True)
+    path = f'{graph_dir}/graph_{lengthFactor}_{shadeFactor}.pkl'
     # Check if variables already present.
     if os.path.exists(path):
         with open(path, 'rb') as f:
@@ -136,7 +140,7 @@ def find_closest_nodes(nodes_file_path, origin, destination):
     # print(closest_origin_node_id, closest_destination_node_id)
     return closest_origin_node_id, closest_destination_node_id
 
-def main(lengthFactor, shadeFactor, origin, destination):
+def main(lengthFactor, shadeFactor, origin, destination, hour=None):
 
     city_name = evaluate_city(origin, destination)
     
@@ -149,10 +153,13 @@ def main(lengthFactor, shadeFactor, origin, destination):
     start_node, end_node = find_closest_nodes(nodes_file_path, origin, destination)
     
     pkl_filename = f'../orchestrator/data/{city_name}/total_road_shade_coverage.pkl'
+    hourly_pkl_filename = f'../orchestrator/data/{city_name}/coverages/total_road_shade_coverage_hr{hour}.pkl'
+    if hour is not None and os.path.exists(hourly_pkl_filename):
+        pkl_filename = hourly_pkl_filename
     with open(pkl_filename, 'rb') as pkl_file:
         totalRoadShadeCoverage = pickle.load(pkl_file)
 
-    return calculate(links_file_path, nodes_file_path, start_node, end_node, totalRoadShadeCoverage, lengthFactor, shadeFactor, city_name)
+    return calculate(links_file_path, nodes_file_path, start_node, end_node, totalRoadShadeCoverage, lengthFactor, shadeFactor, city_name, hour)
 
 def evaluate_city(origin, destination):
     # Extract the city bounds
